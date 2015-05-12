@@ -20,7 +20,7 @@ end)
 local moduleName = ...
 local M = {}
 _G[moduleName] = M
-local serverName = "open.lewei50.com"
+local serverName = "ht.api.lewei50.com"
 local serverIP
 
 local gateWay
@@ -28,6 +28,7 @@ local userKey
 local sn
 local sensorValueTable
 local apiUrl = ""
+local apiLogUrl = ""
 local socket = nil
 
 function M.init(gw,ukey)
@@ -38,8 +39,10 @@ function M.init(gw,ukey)
      else userKey = userkey
      end
      	apiUrl = "UpdateSensors/"..gateWay
+     	apiLogUrl = "updatelog/"..gateWay
      if(_G["sn"] ~= nil) then sn = _G["sn"]
      	apiUrl = "UpdateSensorsBySN/"..sn
+     	apiLogUrl = "updatelogBySN/"..sn
      end
      sensorValueTable = {}
 end
@@ -92,6 +95,43 @@ function M.sendSensorValue(sname,svalue)
           PostData = nil
           socket:close()
           print(node.heap())
+        end)
+     end
+end
+
+function M.sendLog(logStr)
+     --创建一个TCP连接
+     socket=net.createConnection(net.TCP, 0)
+
+     --域名解析IP地址并赋值
+     if(serverIP == nil) then
+     socket:dns(serverName, function(conn, ip)
+          print("Connection IP:" .. ip)
+          serverIP = ip
+          end)     
+     end
+
+     if(serverIP ~= nil) then
+     
+     socket:connect(80, serverIP)
+     socket:on("connection", function(sck, response)
+          
+          --定义数据变量格式
+          PostData = "{\"Message\":\"" .. logStr .. "\"}"
+          --HTTP请求头定义
+          socket:send("POST /api/V1/gateway/"..apiLogUrl.." HTTP/1.1\r\n")
+          socket:send("Host: "..serverName.."\r\n")
+          socket:send("Content-Length: " .. string.len(PostData) .. "\r\n")
+          if(userKey~=nil) then socket:send("userkey: "..userKey.."\r\n") end
+          socket:send("\r\n"..PostData .. "\r\n")
+          end)
+     
+     --HTTP响应内容
+     socket:on("receive", function(sck, response)
+          --print(response)
+          PostData = nil
+          socket:close()
+          print("log send")
         end)
      end
 end
