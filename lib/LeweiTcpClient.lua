@@ -11,8 +11,14 @@ require("LeweiTcpClient")
 LeweiTcpClient.init("01","your_api_key_here")
 function test(p1)
    print("test function!"..p1)
+   LeweiTcpClient.sendSensorValue("sensor1",1)
 end
-LeweiTcpClient.addUserSwitch(test,"switch03",1)
+function test2(p1)
+   LeweiTcpClient.appendSensorValue("sensor2",0)
+   print("test function!"..p1)
+end
+LeweiTcpClient.addUserSwitch(test,"switch01",1)
+LeweiTcpClient.addUserSwitch(test2,"switch02",1)
 ]]--
 
 local moduleName = ...
@@ -27,7 +33,7 @@ local gateWay = ""
 local userKey = ""
 local uSwitchNode = nil
 local strOnline = ""
-
+local strSensorValue = ""
 
 --get value from string like "p1":"1","f":"getAllSensors"
 local function getStrValue(str,strName)
@@ -169,7 +175,16 @@ function M.updateUserSwitch(uName,uValue)
      M.addUserSwitch(nil,uName,uValue)
 end
 
+function M.appendSensorValue(sName,sValue)
+     strSensorValue=strSensorValue.."{\"Name\":\""..sName.."\",\"Value\":\""..sValue.."\"},"
+end
 
+function M.sendSensorValue(sName,sValue)
+     sensorStr="{\"method\": \"upload\", \"data\":["..strSensorValue.."{\"Name\":\""..sName.."\",\"Value\":\""..sValue.."\"}]}&^!"
+     socket:send(sensorStr)
+     sensorStr = nil
+     strSensorValue = ""
+end
 
 function M.init(gw,userkey)
      if(_G["gateWay"] ~= nil) then gateWay = _G["gateWay"]
