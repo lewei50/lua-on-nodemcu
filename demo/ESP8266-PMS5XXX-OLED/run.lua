@@ -25,7 +25,7 @@ function setTimer()
      tmr.alarm(0, 60000, 0, function()
                if(pm25 ~=nil) then 
                if(Temp~=nil) then LeweiHttpClient.appendSensorValue("T1",Temp)  end
-               if(Hum~=nil) LeweiHttpClient.appendSensorValue("H1",Hum) end
+               if(Hum~=nil) then LeweiHttpClient.appendSensorValue("H1",Hum) end
                LeweiHttpClient.sendSensorValue(sensorId,pm25) 
                setTimer()
                end
