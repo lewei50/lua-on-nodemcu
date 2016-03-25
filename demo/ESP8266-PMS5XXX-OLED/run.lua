@@ -24,8 +24,8 @@ LeweiHttpClient.init("01","your_api_key_here")
 function setTimer()
      tmr.alarm(0, 60000, 0, function()
                if(pm25 ~=nil) then 
-               LeweiHttpClient.appendSensorValue("T1",Temp) 
-               LeweiHttpClient.appendSensorValue("H1",Hum) 
+               if(Temp~=nil) then LeweiHttpClient.appendSensorValue("T1",Temp)  end
+               if(Hum~=nil) LeweiHttpClient.appendSensorValue("H1",Hum) end
                LeweiHttpClient.sendSensorValue(sensorId,pm25) 
                setTimer()
                end
