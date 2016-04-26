@@ -21,11 +21,35 @@ local Hum = nil
 local Temp = nil
 
 LeweiHttpClient.init("01","your_api_key_here")
+
+function calcAQI(pNum)
+     --local clow = {0,15.5,40.5,65.5,150.5,250.5,350.5}
+     --local chigh = {15.4,40.4,65.4,150.4,250.4,350.4,500.4}
+     --local ilow = {0,51,101,151,201,301,401}
+     --local ihigh = {50,100,150,200,300,400,500}
+     local ipm25 = {0,35,75,115,150,250,350,500}
+     local laqi = {0,50,100,150,200,300,400,500}
+     local result={"优","良","轻度污染","中度污染","重度污染","严重污染","爆表"}
+     --print(table.getn(chigh))
+     aqiLevel = 8
+     for i = 1,table.getn(ipm25),1 do
+          if(pNum<ipm25[i])then
+               aqiLevel = i
+               break
+          end
+     end
+     --aqiNum = (ihigh[aqiLevel]-ilow[aqiLevel])/(chigh[aqiLevel]-clow[aqiLevel])*(pNum-clow[aqiLevel])+ilow[aqiLevel]
+     aqiNum = (laqi[aqiLevel]-laqi[aqiLevel-1])/(ipm25[aqiLevel]-ipm25[aqiLevel-1])*(pNum-ipm25[aqiLevel-1])+laqi[aqiLevel-1]
+     return math.floor(aqiNum),result[aqiLevel-1]
+end
+
 function setTimer()
      tmr.alarm(0, 60000, 0, function()
                if(pm25 ~=nil) then 
                if(Temp~=nil) then LeweiHttpClient.appendSensorValue("T1",Temp)  end
                if(Hum~=nil) then LeweiHttpClient.appendSensorValue("H1",Hum) end
+               aqi,result = calcAQI(pm25)
+               LeweiHttpClient.appendSensorValue("dust",aqi)
                LeweiHttpClient.sendSensorValue(sensorId,pm25) 
                setTimer()
                end
