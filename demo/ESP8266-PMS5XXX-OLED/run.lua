@@ -49,7 +49,7 @@ function setTimer()
                if(Temp~=nil) then LeweiHttpClient.appendSensorValue("T1",Temp)  end
                if(Hum~=nil) then LeweiHttpClient.appendSensorValue("H1",Hum) end
                aqi,result = calcAQI(pm25)
-               LeweiHttpClient.appendSensorValue("dust",aqi)
+               LeweiHttpClient.appendSensorValue("AQI",aqi)
                LeweiHttpClient.sendSensorValue(sensorId,pm25) 
                setTimer()
                end
