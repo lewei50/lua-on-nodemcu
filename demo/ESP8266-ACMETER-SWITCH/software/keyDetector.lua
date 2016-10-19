@@ -11,6 +11,14 @@ local flashButton = 7
 
 local swtState
 
+local r = 4
+local g = 1
+local b = 11
+
+gpio.mode(r,gpio.OUTPUT)
+gpio.mode(g,gpio.OUTPUT)
+gpio.mode(b,gpio.OUTPUT)
+
 
 
 function noOp(level)
@@ -23,6 +31,17 @@ function M.setSwtState(state)
      gpio.mode(0,gpio.OUTPUT)
      gpio.write(0,state)
      print(state)
+     
+     if(state == 1 or state == "1") then
+          gpio.write(r,gpio.LOW)
+          gpio.write(g,gpio.LOW)
+          --gpio.write(b,gpio.LOW)
+     else
+          gpio.write(r,gpio.HIGH)
+          gpio.write(g,gpio.HIGH)
+          --gpio.write(b,gpio.HIGH)
+     end
+     
      if file.open("swtState.lua", "w+") then
        -- write 'foo bar' to the end of the file
        file.writeline(state)
@@ -64,7 +83,7 @@ function pin1cb(level)
           --print("up"..tmr.now().."-"..pulse1)
           gpio.trig(flashButton, "down",pin1cb) 
           du = tmr.now()-pulse1
-          if(du<50000)then
+          if(du<20000)then
                --ignor
           elseif(du<600000)then
                     shortPress()

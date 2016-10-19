@@ -6,7 +6,7 @@ require("keyDetector")
 keyDetector.enableTrig()
 
 function test(p1)
-   print("test function!"..p1)
+   --print("test function!"..p1)
    keyDetector.setSwtState(p1)
    --gpio.mode(0,gpio.INPUT)
 end
