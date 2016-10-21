@@ -56,6 +56,7 @@ function M.startMeter()
         if(string.len(fb)>=37) then
           --print(string.byte(fb,1))
           if(string.byte(fb,1) == 1 and string.byte(fb,2) == 3) then
+               tmr.wdclr()
                --change to crc later
                --uart.write(0,string.len(fb))
                voltVal = (string.byte(fb,4)*256*256*256+string.byte(fb,5)*256*256+string.byte(fb,6)*256+string.byte(fb,7))/10000

@@ -32,49 +32,5 @@ end
 M.addVar("ssid")
 M.addVar("password")
 
---try to open user configuration file
-if( file.open("network_user_cfg.lua") ~= nil) then
-     ssid=""
-     password=""
-     require("network_user_cfg")
-          --print("set up wifi mode")
-          wifi.setmode(wifi.STATION)
-          --please config ssid and password according to settings of your wireless router.
-          wifi.sta.config(ssid,password)
-          wifi.sta.connect()
-          cnt = 0
-          tmr.alarm(1, 1000, 1, function()
-               if (wifi.sta.getip() == nil) and (cnt < 10) then
-                    --print(".")
-                    cnt = cnt + 1
-               else
-                    tmr.stop(1)
-                    if (cnt < 10) then print("IP:"..wifi.sta.getip())
-                         --_G["wifiStatue"] = "OK"
-                         if(userScriptFile ~="") then 
-                              --print(node.heap())
-                              --for n in pairs(_G) do print(n) end
-                              ssid= nil
-                              password = nil
-                              _G["config"] = nil
-                              --M = nil
-                              --print("---")
-                              --for n in pairs(_G) do print(n) end
-                              --print(node.heap())
-                              _G["EasyWebConfig"]=nil
-                              package.loaded["network_user_cfg"]=nil
-                              package.loaded["EasyWebConfig"]=nil
-                              dofile(userScriptFile) 
-                         end
-                    else print("FailToConnect,LoadDefault")
-                         wifi.sta.disconnect()
-                         _G["wifiStatue"] = "Failed"
-                         require("network_default_cfg")
-                         print ("LoadDefault")
-                    end
-               end
-          end)
-else
-     require("network_default_cfg")
-     print ("LoadDefault")
-end
+require("network_default_cfg")
+print ("LoadDefault")
