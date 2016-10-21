@@ -121,3 +121,6 @@ srv:listen(80,function(conn)
 	
 	end)
 end)
+
+gpio.write(1,gpio.HIGH)
+gpio.write(2,gpio.LOW)

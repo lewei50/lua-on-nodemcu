@@ -11,7 +11,7 @@ local flashButton = 7
 
 local swtState
 
-local r = 4
+local r = 2
 local g = 1
 --local b = 11
 
@@ -75,6 +75,7 @@ function M.getSwtState()
 end
 
 function shortPress()
+     if(wifi.getmode()==wifi.SOFTAP)then wifi.setmode(wifi.STATION) end
      if(swtState== 1) then 
           M.setSwtState(0)
           swtState= 0
