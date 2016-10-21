@@ -13,11 +13,11 @@ local swtState
 
 local r = 4
 local g = 1
-local b = 11
+--local b = 11
 
 gpio.mode(r,gpio.OUTPUT)
 gpio.mode(g,gpio.OUTPUT)
-gpio.mode(b,gpio.OUTPUT)
+--gpio.mode(b,gpio.OUTPUT)
 
 
 
@@ -25,14 +25,30 @@ function noOp(level)
 print("no op")
 end
 
+
+function M.disableTrig()
+--print("disable trig")
+gpio.mode(flashButton,gpio.INT)
+--print("disable trig1")
+     gpio.trig(flashButton, "down",noOp)
+--print("disable trig2")
+end
+
+function M.enableTrig()
+--print("enable trig")
+gpio.mode(flashButton,gpio.INT)
+     gpio.trig(flashButton, "down",pin1cb)
+end
+--enableTrig()
+
 function M.setSwtState(state)
-     swtState = state
+     swtState = tonumber(state)
      
      gpio.mode(0,gpio.OUTPUT)
-     gpio.write(0,state)
-     print(state)
+     gpio.write(0,swtState)
+     print(swtState)
      
-     if(state == 1 or state == "1") then
+     if(swtState == 1) then
           gpio.write(r,gpio.LOW)
           gpio.write(g,gpio.LOW)
           --gpio.write(b,gpio.LOW)
@@ -43,12 +59,13 @@ function M.setSwtState(state)
      end
      
      if file.open("swtState.lua", "w+") then
-       -- write 'foo bar' to the end of the file
-       file.writeline(state)
+       M.disableTrig()
+       file.writeline(swtState)
        file.close()
+       M.enableTrig()
      end
      if(wifi.sta.getip()~=nil and LeweiTcpClient ~= nil) then
-          print("update LeweiTcpClient")
+          print("update")
           LeweiTcpClient.updateUserSwitch("DO",state)
      end
 end
@@ -101,20 +118,6 @@ function pin1cb(level)
 end
 
 
-function M.disableTrig()
---print("disable trig")
-gpio.mode(flashButton,gpio.INT)
---print("disable trig1")
-     gpio.trig(flashButton, "down",noOp)
---print("disable trig2")
-end
-
-function M.enableTrig()
---print("enable trig")
-gpio.mode(flashButton,gpio.INT)
-     gpio.trig(flashButton, "down",pin1cb)
-end
---enableTrig()
 
 if file.open("swtState.lua", "r") then
   swtState = file.read(1)
