@@ -42,6 +42,7 @@ end
 --enableTrig()
 
 function M.setSwtState(state)
+		 if(state==nil)then state = 0 end
      swtState = tonumber(state)
      
      gpio.mode(0,gpio.OUTPUT)
@@ -90,6 +91,7 @@ function longPress()
      tmr.stop(6)
      gpio.trig(flashButton, "down")
      acMeter.stopMeter()
+     wifi.sta.disconnect()
      require("EasyWebConfig")
      EasyWebConfig.addVar("gateWay")
      EasyWebConfig.addVar("userKey")
