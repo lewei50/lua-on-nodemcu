@@ -73,8 +73,8 @@ uart.on("data", 0,
           --socket:send(pm25..'\n\r')    
           local si7021 = require("si7021")
           
-          SDA_PIN = 5 -- sda pin, GPIO12
-          SCL_PIN = 6 -- scl pin, GPIO14
+          SDA_PIN = 5 -- sda pin, GPIO14
+          SCL_PIN = 6 -- scl pin, GPIO12
           
           si7021.init(SDA_PIN, SCL_PIN)
           si7021.read(OSS)
