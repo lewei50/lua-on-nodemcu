@@ -73,20 +73,21 @@ function M.sendSensorValue(sname,svalue)
 
           --定义数据变量格式
           --HTTP请求头定义
-          socket:send("POST /api/V1/gateway/"..apiUrl.." HTTP/1.1\r\n")
-          socket:send("Host: "..serverName.."\r\n")
-          socket:send("Content-Length: " .. cntLen .. "\r\n")
-          if(userKey~=nil) then socket:send("userkey: "..userKey.."\r\n") end
-          socket:send("\r\n")
-          socket:send("[")
+          pl = ""
+          pl = pl .. "POST /api/V1/gateway/"..apiUrl.." HTTP/1.1\r\n"
+          pl = pl .. "Host: "..serverName.."\r\n"
+          pl = pl .. "Content-Length: " .. cntLen .. "\r\n"
+          if(userKey~=nil) then pl = pl .. "userkey: "..userKey.."\r\n" end
+          pl = pl .. "\r\n"
+          pl = pl .. "["
           for i,v in pairs(sensorValueTable) do 
-               socket:send("{\"Name\":\""..i.."\",\"Value\":\"" .. v .. "\"},")
+               pl = pl .. "{\"Name\":\""..i.."\",\"Value\":\"" .. v .. "\"},"
                --print(i)
                --print(v) 
           end
-          socket:send("{\"Name\":\""..sname.."\",\"Value\":\"" .. svalue .. "\"}")
-          socket:send("]")
-          socket:send("\r\n")
+          pl = pl .. "{\"Name\":\""..sname.."\",\"Value\":\"" .. svalue .. "\"}"
+          pl = pl .. "]"
+          socket:send(pl .. "\r\n")
           end)
           --socket:on("sent", function(sck, response)
                --print(tmr.now().."sent")
