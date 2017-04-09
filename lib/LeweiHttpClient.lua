@@ -35,7 +35,7 @@ function M.init(gw,ukey)
      else gateWay = gw
      end
      if(_G["userKey"] ~= nil) then userKey = _G["userKey"]
-     else userKey = userkey
+     else userKey = ukey
      end
      	apiUrl = "UpdateSensors/"..gateWay
      if(_G["sn"] ~= nil) then sn = _G["sn"]
