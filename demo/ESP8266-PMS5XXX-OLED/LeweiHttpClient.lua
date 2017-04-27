@@ -32,7 +32,9 @@ local apiLogUrl = ""
 local socket = nil
 
 function M.init()
-     apiUrl = "UpdateSensorsBySN/"..string.upper(string.gsub(wifi.sta.getmac(), ":", ""))
+     --choose your apiUrl
+     apiUrl = "UpdateSensors/"..gateWay
+     --apiUrl = "UpdateSensorsBySN/"..string.upper(string.gsub(wifi.sta.getmac(), ":", ""))
      sensorValueTable = {}
 print(apiUrl)
 end
