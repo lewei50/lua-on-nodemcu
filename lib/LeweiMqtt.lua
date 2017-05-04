@@ -8,6 +8,42 @@
 -- MIT license, http://opensource.org/licenses/MIT
 -- ***************************************************************************
 
+--[[
+--*****sample*****
+wifi.setmode(wifi.STATION)
+
+station_cfg={}
+station_cfg.ssid="WIFI_SSID"
+station_cfg.pwd="WIFI_PASSWORD"
+wifi.sta.config(station_cfg)
+wifi.sta.connect()
+
+require("LeweiMqtt")
+LeweiMqtt.init("LEWEI_USERKEY","LEWEI_GATEWAY")
+
+
+function localFnAppendSensorValue(p1)
+   LeweiMqtt.appendSensorValue("sensor2",0)
+   print("test function!"..p1)
+end
+
+function localFnSendSensorValue(p1)
+   print("test function1!"..p1)
+   LeweiMqtt.sendSensorValue("t1",1)
+end
+
+--add 2 switches on LEWEI50 website,name them "a","s"
+LeweiMqtt.addUserSwitch(localFnAppendSensorValue,"a",1)
+LeweiMqtt.addUserSwitch(localFnSendSensorValue,"s",1)
+
+wifi.eventmon.register(wifi.eventmon.STA_GOT_IP, function(T)
+print("\n\tSTA - GOT IP".."\n\tStation IP: "..T.IP.."\n\tSubnet mask: "..T.netmask.."\n\tGateway IP: "..T.gateway)
+LeweiMqtt.connect()
+
+end)
+wifi.sta.eventMonStart()
+]]--
+
 local moduleName = 'LeweiMqtt'
 local M = {}
 _G[moduleName] = M
