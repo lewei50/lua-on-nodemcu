@@ -61,7 +61,8 @@ local bConnected = false
 local onlineChkTmr = tmr.create()
 
 
-local cjson = require("cjson")
+--local cjson = require("cjson")
+local cjson = sjson
 
 function M.init(uKey,gw,tmOut)
      if(tmOut==nil)then tmOut = 120 end
