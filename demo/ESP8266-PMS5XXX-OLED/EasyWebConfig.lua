@@ -39,8 +39,11 @@ if( file.open("network_user_cfg.lua") ~= nil) then
      require("network_user_cfg")
           --print("set up wifi mode")
           wifi.setmode(wifi.STATION)
+          station_cfg={}
+          station_cfg.ssid=ssid
+          station_cfg.pwd=password
           --please config ssid and password according to settings of your wireless router.
-          wifi.sta.config(ssid,password)
+          wifi.sta.config(station_cfg)
           wifi.sta.connect()
           cnt = 0
           tmr.alarm(1, 1000, 1, function()
