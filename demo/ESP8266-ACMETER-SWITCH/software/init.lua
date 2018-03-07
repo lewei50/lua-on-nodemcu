@@ -1,6 +1,6 @@
 tmr.softwd(3600)
 
-tmr.delay(1000)
+tmr.alarm(2, 3000, tmr.ALARM_SINGLE, function()
 require('keyDetector')
 require('acMeter')
 acMeter.stopMeter()
@@ -12,20 +12,27 @@ if( file.open("network_user_cfg.lua") ~= nil) then
      dofile("network_user_cfg.lua")
      --print("set up wifi mode")
      print("start")
-     wifi.sta.config(ssid,password)
+     station_cfg={}
+     station_cfg.ssid=ssid
+     station_cfg.pwd=password
+     wifi.sta.config(station_cfg)
      wifi.sta.connect()
 end
+wifi.eventmon.register(wifi.eventmon.STA_CONNECTED, function(T)
+print("\n\tSTA - CONNECTED".."\n\tSSID: "..T.SSID.."\n\tBSSID: "..
+T.BSSID.."\n\tChannel: "..T.channel)
+end)
 
-wifi.sta.eventMonReg(wifi.STA_IDLE, function() print("STATION_IDLE") end)
-wifi.sta.eventMonReg(wifi.STA_CONNECTING, function() print("STATION_CONNECTING") end)
-wifi.sta.eventMonReg(wifi.STA_WRONGPWD, function() print("STATION_WRONG_PASSWORD") end)
-wifi.sta.eventMonReg(wifi.STA_APNOTFOUND, function() print("STATION_NO_AP_FOUND") end)
-wifi.sta.eventMonReg(wifi.STA_FAIL, function() print("STATION_CONNECT_FAIL") end)
-wifi.sta.eventMonReg(wifi.STA_GOTIP, function() 
+wifi.eventmon.register(wifi.eventmon.STA_DISCONNECTED, function(T)
+print("\n\tSTA - DISCONNECTED".."\n\tSSID: "..T.SSID.."\n\tBSSID: "..
+T.BSSID.."\n\treason: "..T.reason)
+end)
+wifi.eventmon.register(wifi.eventmon.STA_GOT_IP, function() 
 print("STATION_GOT_IP")
 if( file.open("network_user_cfg.lua") ~= nil) then
      require('run')
 end
 end)
 
-wifi.sta.eventMonStart()
+--wifi.sta.eventMonStart()
+end)

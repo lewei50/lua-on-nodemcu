@@ -40,7 +40,7 @@ function M.getData()
 end
 
 function M.stopMeter()
-     uart.setup(0,9600,8,0,1,0)
+     uart.setup(0,115200,8,0,1,0)
      tmr.stop(0)
      uart.on("data")
 end
