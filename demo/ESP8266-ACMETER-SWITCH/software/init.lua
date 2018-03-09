@@ -6,6 +6,8 @@ require('acMeter')
 acMeter.stopMeter()
 keyDetector.enableTrig()
 
+uploader = nil
+
 wifi.setmode(wifi.STATION)
 
 if( file.open("network_user_cfg.lua") ~= nil) then
@@ -26,11 +28,13 @@ end)
 wifi.eventmon.register(wifi.eventmon.STA_DISCONNECTED, function(T)
 print("\n\tSTA - DISCONNECTED".."\n\tSSID: "..T.SSID.."\n\tBSSID: "..
 T.BSSID.."\n\treason: "..T.reason)
+     if(run) then run.stop() end
 end)
 wifi.eventmon.register(wifi.eventmon.STA_GOT_IP, function() 
 print("STATION_GOT_IP")
 if( file.open("network_user_cfg.lua") ~= nil) then
      require('run')
+     run.start()
 end
 end)
 

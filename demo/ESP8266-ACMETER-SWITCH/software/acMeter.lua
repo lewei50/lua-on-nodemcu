@@ -74,6 +74,7 @@ function M.startMeter()
                end
           end
           fb = ""
+          --print(node.heap())
         end
      
         if (string.find(data,"quit")~=nil) then 
