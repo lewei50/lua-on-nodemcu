@@ -26,7 +26,8 @@ local M = {}
 _G[moduleName] = M
 
 local socket = nil
-local server = "tcp.lewei50.com"--"192.168.1.129"--
+local server = "tcp.lewei50.com"
+--local server = "192.168.2.5"--
 local port = 9960
 local bConnected = false
 local gateWay = ""
@@ -126,6 +127,7 @@ local function connectServer()
      ]]--
      socket:on("disconnection", function(sck, response)
           --print("d")
+          if(socket:getpeer()~=nil) then socket:close() end
           connectServer()
           bConnected = false
      end)

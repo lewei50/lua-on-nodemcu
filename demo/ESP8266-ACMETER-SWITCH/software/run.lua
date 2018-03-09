@@ -23,7 +23,9 @@ acMeter.startMeter()
 uploadtimer = tmr.create()
 uploadtimer:register(30000, tmr.ALARM_AUTO, function()
 tmr.wdclr()--feed dog here
+--print('upload'..node.heap())
 v,p,e = acMeter.getData()
+--print(v,p,e)
 if(v ~= nil and e ~= nil and p ~= nil) then
      LeweiTcpClient.appendSensorValue("AI0",v)
      LeweiTcpClient.appendSensorValue("AI1",e)
