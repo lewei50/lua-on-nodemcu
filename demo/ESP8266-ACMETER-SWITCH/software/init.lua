@@ -1,4 +1,4 @@
-tmr.softwd(3600)
+--tmr.softwd(3600)
 
 tmr.alarm(2, 3000, tmr.ALARM_SINGLE, function()
 require('keyDetector')
