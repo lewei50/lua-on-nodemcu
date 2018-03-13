@@ -183,7 +183,7 @@ end
 
 function M.sendSensorValue(sName,sValue)
      sensorStr="{\"method\": \"upload\", \"data\":["..strSensorValue.."{\"Name\":\""..sName.."\",\"Value\":\""..sValue.."\"}]}&^!"
-     socket:send(sensorStr)
+     if(bConnected == true) then socket:send(sensorStr) end
      sensorStr = nil
      strSensorValue = ""
 end
