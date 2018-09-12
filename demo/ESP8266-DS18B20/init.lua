@@ -52,7 +52,7 @@ function updateRegCode()
           end
           if(result[1]~=nil and result[2]~=nil) then
                userKey = result[1]
-               gateWay = result[2]  
+               gateWay = result[2]
           else
                sn = regCode
           end             
@@ -101,23 +101,6 @@ end
 
 
 function setupServer()
-     wifi.sta.getap(function(t)
-          --[[
-          available_aps = ""
-          if t then
-               local count = 0
-               for k,v in pairs(t) do
-                    ap = string.format("%-10s",k)
-                    ap = trim(ap)
-                    available_aps = available_aps .. "<option value='".. ap .."'"
-                    if(ap == _G['ssid']) then available_aps = available_aps .. " selected=\"SELECTED\"" end
-                    available_aps = available_aps ..">".. ap .."</option>"
-                    count = count+1
-                    if (count>=15) then break end
-               end
-               available_aps = available_aps .. "<option value='-1'>---hidden SSID---</option>"
-          end
-          ]]--
      if srv ~= nil then srv:close() end
      print("Setting up webserver")
      srv=net.createServer(net.TCP)
@@ -217,7 +200,7 @@ function setupServer()
      end)
      print("Webserver ready: " .. ip)
      --print(node.heap())
-     end)
+     --end)
 
 end
 
