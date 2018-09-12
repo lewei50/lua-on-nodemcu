@@ -1,0 +1,10 @@
+<html>
+<head>${html_head}</head>
+<body>
+<form method='get' action='/'>
+<table border='1'>
+<tr><td><a href="http://${ip}/"><h1>WIFI SETUP</h1></a></td><td><a href="http://${ip}/dev"><h1>SN SETUP</h1></a></td></tr>
+<tr><td colspan="2">SN: ${regCode}</td></tr>
+<tr><td>SN :</td><td> <input name='regCode' value='${regCode}'/></td></tr>
+<tr><td>${status}</td><td><button type='submit'>Save</button></td></tr>
+</table></form></body></html>

@@ -1,0 +1,12 @@
+<html>
+<head>${html_head}</head>
+<body>
+<form method='get' action='/'>
+<table border='1'>
+<tr><td colspan="2"><a href="http://${ip}/"><h1>WIFI SETUP</h1></a></td></tr>
+<tr><td colspan="2">SN: ${regCode}</td></tr>
+<tr><td>SSID: </td><td><input name='ssid' id='ssid' onchange="showHiddenSSID()" value='${ssid}'>${available_aps}</input></td></tr>
+<tr><td>Password: </td><td><input type='password' name='password' value='${password}'></input></td></tr>
+<tr><td>${status}</td><td><button type='submit'>Save</button></td></tr>
+</table></form>
+</body></html>
