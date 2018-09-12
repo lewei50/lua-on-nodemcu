@@ -37,8 +37,7 @@ function M.init(gw,ukey)
       apiUrl = "UpdateSensorsBySN/"..sn
       apiLogUrl = "updatelogBySN/"..sn
      else
-          if(_G["gateWay"] ~= nil) then gateWay = _G["gateWay"]
-          elseif(gw ~=nil) then
+          if(gw ~=nil) then
                gateWay = gw
                apiUrl = "UpdateSensors/"..gateWay
                apiLogUrl = "updatelog/"..gateWay
@@ -75,7 +74,6 @@ function M.sendSensorValue(sname,svalue)
      ]]--
      print(sjson.encode(sensorValueTable))
      print(serverName)
-     --if(serverIP ~= nil) then
      if(userKey~=nil) then userkeyStr = "userkey:"..userKey.."\r\n" end
      http.post('http://'..serverName.."/api/V1/gateway/"..apiUrl,
           userkeyStr,
@@ -88,32 +86,4 @@ function M.sendSensorValue(sname,svalue)
           end
      end)
      sensorValueTable = {}
-     --[[
-     socket:connect(80, serverIP)
-     socket:on("connection", function(sck, response)
-          
-          --定义数据变量格式
-          PostData = "["
-          for i,v in pairs(sensorValueTable) do 
-               PostData = PostData .. "{\"Name\":\""..i.."\",\"Value\":\"" .. v .. "\"},"
-          end
-          PostData = PostData .."{\"Name\":\""..sname.."\",\"Value\":\"" .. svalue .. "\"}"
-          PostData = PostData .. "]"
-          --HTTP请求头定义
-          socket:send("POST /api/V1/gateway/"..apiUrl.." HTTP/1.1\r\n")
-          socket:send("Host: "..serverName.."\r\n")
-          socket:send("Content-Length: " .. string.len(PostData) .. "\r\n")
-          if(userKey~=nil) then socket:send("userkey: "..userKey.."\r\n") end
-          socket:send("\r\n"..PostData .. "\r\n")
-          end)
-     
-     --HTTP响应内容
-     socket:on("receive", function(sck, response)
-          --print(response)
-          PostData = nil
-          socket:close()
-          print(node.heap())
-        end)
-     ]]--
-     --end
 end

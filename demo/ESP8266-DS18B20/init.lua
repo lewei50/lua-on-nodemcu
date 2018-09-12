@@ -235,6 +235,7 @@ function setupMonitor()
      end)
      setupServer()
      end)
+     --[[
      wifi.eventmon.register(wifi.eventmon.STA_DHCP_TIMEOUT, function()
      print("\n\tSTA - DHCP TIMEOUT")
      end)
@@ -244,6 +245,7 @@ function setupMonitor()
      wifi.eventmon.register(wifi.eventmon.AP_STADISCONNECTED, function(T)
      print("\n\tAP - STATION DISCONNECTED".."\n\tMAC: "..T.MAC.."\n\tAID: "..T.AID)
      end)
+     ]]--
 end
 
 wifi.setmode(wifi.STATIONAP)

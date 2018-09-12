@@ -1,7 +1,7 @@
 require("LeweiHttpClient")
 
 LeweiHttpClient.init(gateWay,userKey)
-tmr.alarm(2, 60000, 1, function()
+tmr.alarm(2, 60000, tmr.ALARM_AUTO, function()
      if(H1 ~= nil) then
           LeweiHttpClient.appendSensorValue("H1",H1)
      end
