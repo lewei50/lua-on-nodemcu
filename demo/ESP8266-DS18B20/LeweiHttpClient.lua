@@ -75,15 +75,17 @@ function M.sendSensorValue(sname,svalue)
      print(sjson.encode(sensorValueTable))
      print(serverName)
      if(userKey~=nil) then userkeyStr = "userkey:"..userKey.."\r\n" end
-     http.post('http://'..serverName.."/api/V1/gateway/"..apiUrl,
-          userkeyStr,
-          sjson.encode(sensorValueTable),
-          function(code, data)
-          if (code < 0) then
-           print("HTTP request failed")
-          else
-           print(code, data)
-          end
-     end)
+     if(apiUrl ~="") then 
+          http.post('http://'..serverName.."/api/V1/gateway/"..apiUrl,
+               userkeyStr,
+               sjson.encode(sensorValueTable),
+               function(code, data)
+               if (code < 0) then
+                print("HTTP request failed")
+               else
+                print(code, data)
+               end
+          end)
+     end
      sensorValueTable = {}
 end
