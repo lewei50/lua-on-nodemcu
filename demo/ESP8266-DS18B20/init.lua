@@ -6,7 +6,7 @@ gateWay = nil
 userKey = nil
 
 function getTemp()
-     T1,H1 = nil
+     --T1,H1 = nil
      local ow_pin = 5
      ds18b20.setup(ow_pin)
      -- read all sensors and print all measurement results
