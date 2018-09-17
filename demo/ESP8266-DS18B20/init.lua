@@ -6,40 +6,44 @@ gateWay = nil
 userKey = nil
 
 function getTemp()
-     --T1,H1 = nil
-     local ow_pin = 5
-     ds18b20.setup(ow_pin)
-     -- read all sensors and print all measurement results
-     ds18b20.read(
-     function(ind,rom,res,temp,tdec,par)
-          --print(temp)
-          if(temp ~= nil) then
-               sensorState = "succeed"
-               sensorData = temp
-               T1 = temp
-               H1 = nil
-          else
-               sensorState = "fail"
-               sensorData = ""
-          end
-     end,{})
+     pin = 5
+     status, temp, humi, temp_dec, humi_dec = dht.read(pin)
+     if status == dht.OK then
+          -- Float firmware using this example
+          --print("DHT Temperature:"..temp..";".."Humidity:"..humi)
+          sensorState = "succeed"
+          sensorData = temp..","..humi
+          T1 = temp
+          H1 = humi
+     else
+          H1 = nil
+          --sensorState = "fail"
+          --sensorData = ""
+          local ow_pin = 5
+          ds18b20.setup(ow_pin)
+          -- read all sensors and print all measurement results
+          ds18b20.read(
+          function(ind,rom,res,temp,tdec,par)
+               if(temp ~= nil) then
+                    sensorState = "succeed"
+                    sensorData = temp
+                    T1 = temp
+                    H1 = nil
+               else
+                    sensorState = "fail"
+                    sensorData = ""
+                    T1 = nil
+               end
+          end,{})
+     end
+     --[[
      tmr.alarm(4,1000,tmr.ALARM_SINGLE,function()
      if(T1 == nil) then
-          pin = 5
-          status, temp, humi, temp_dec, humi_dec = dht.read(pin)
-          if status == dht.OK then
-               -- Float firmware using this example
-               --print("DHT Temperature:"..temp..";".."Humidity:"..humi)
-               sensorState = "succeed"
-               sensorData = temp..","..humi
-               T1 = temp
-               H1 = humi
-          else
-               sensorState = "fail"
-               sensorData = ""
-          end
+     
+          
        end
       end)
+      ]]--
          --print(node.heap())
      return temp
 end
