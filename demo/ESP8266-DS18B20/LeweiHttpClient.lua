@@ -84,6 +84,9 @@ function M.sendSensorValue(sname,svalue)
                 print("HTTP request failed")
                else
                 print(code, data)
+                if(string.find(data, 'disabled'))then
+                    snDisabled = true
+                end
                end
           end)
      end

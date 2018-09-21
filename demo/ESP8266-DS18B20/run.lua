@@ -1,6 +1,10 @@
 require("LeweiHttpClient")
 
 LeweiHttpClient.init(gateWay,userKey)
+
+require("tcpServer")
+tcpServer.init()
+
 tmr.alarm(2, 60000, tmr.ALARM_AUTO, function()
      if(H1 ~= nil) then
           LeweiHttpClient.appendSensorValue("H1",H1)
@@ -9,8 +13,14 @@ tmr.alarm(2, 60000, tmr.ALARM_AUTO, function()
           LeweiHttpClient.sendSensorValue("T1",T1)
           T1 = nil
      end
+     if(snDisabled)then
+          tmr.stop(2)
+     end
 end)
 
+tmr.alarm(3, 60000, tmr.ALARM_AUTO, function()
+     tcpServer.keepOnline()
+end)
 
 
 

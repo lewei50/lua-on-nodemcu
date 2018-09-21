@@ -2,6 +2,11 @@ ip = "192.168.4.1"
 svr = nil
 chipId = string.format("%x",node.chipid())
 
+snDisabled = false
+strOnline = ""
+sensorState=""
+sensorData=""
+
 gateWay = nil
 userKey = nil
 
@@ -45,6 +50,8 @@ function getTemp()
       end)
       ]]--
          --print(node.heap())
+     strOnline = "{\"status\":\""..sensorState.."\",\"data\":["..sensorData.."],\"mac\":\""..string.gsub(wifi.sta.getmac(), ":", "").."\"}"
+
      return temp
 end
 
@@ -110,7 +117,7 @@ function setupServer()
      srv=net.createServer(net.TCP)
      srv:listen(80,function(conn)
      conn:on("receive", function(client,request)
-
+          --local buf = ""
           fetchFile = "wifi.html"
           local _, _, method, path, vars = string.find(request, "([A-Z]+) (.+)?(.+) HTTP");
 
@@ -121,15 +128,18 @@ function setupServer()
                fetchFile = "dev.html"
           elseif(path =="/info.xml") then
                fetchFile = "info.xml"
-          elseif(path =="/monitorjson.htm") then
-               getTemp()
-               fetchFile = "monitor.json"
           end
-          print("Send HTML File:"..fetchFile)
-          --print(node.heap())
-          if (file.open(fetchFile,'r')) then
-               buf = file.read()
-               file.close()
+          if(path =="/monitorjson.htm") then
+               getTemp()
+               buf = strOnline
+          else
+               print("Send HTML File:"..fetchFile)
+               --print(node.heap())
+               if (file.open(fetchFile,'r')) then
+                    buf = file.read()
+                    file.close()
+               end
+               
           end
           --end
           local _GET = {}
@@ -137,7 +147,7 @@ function setupServer()
           if (vars ~= nil)then
                for k, v in string.gmatch(vars, "([_%w]+)=([^%&]+)&*") do
                     _GET[k] = unescape(v)
-                    if(k=="regCode")then configFile = "devConfig.lua" end
+                    if(k=="regCode" or k=="tcpSvr")then configFile = "devConfig.lua" end
                end
           end
           cfgContent = ""
