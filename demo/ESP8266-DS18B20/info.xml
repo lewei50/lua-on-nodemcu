@@ -3,7 +3,7 @@
 <device>
 <deviceType>urn:schemas-upnp-org:device:BinaryLight:1</deviceType>
 <friendlyName>DS18B20_${regCodeShort}</friendlyName>
-<presentationURL>/monitorjson.htm</presentationURL>
+<presentationURL>/</presentationURL>
 <serialNumber>${chipId}</serialNumber>
 <modelName>Lewei Wifi DS18B20</modelName>
 <modelNumber>1</modelNumber>

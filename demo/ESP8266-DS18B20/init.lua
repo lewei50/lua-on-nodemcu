@@ -184,7 +184,7 @@ function setupServer()
                --end
            end
            if(_G['status']=="Saved.Connecting...")then
-               _G['html_head']="<meta http-equiv=\"refresh\" content=\"5;url=\\\">"
+               _G['html_head']="<meta http-equiv=\"refresh\" content=\"10;url=\\\">"
            end
           --node.compile("config.lua")
           --file.remove("config.lua")
