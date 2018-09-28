@@ -118,29 +118,33 @@ function setupServer()
      srv:listen(80,function(conn)
      conn:on("receive", function(client,request)
           --local buf = ""
+          writeConfig = false
           fetchFile = "wifi.html"
           local _, _, method, path, vars = string.find(request, "([A-Z]+) (.+)?(.+) HTTP");
 
           --if(method == nil)then
            _, _, method, path = string.find(request, "([A-Z]+) (.+) HTTP");
-          --print(method,path,vars)
+          print(method,path,vars)
           if(path =="/dev") then
+               writeConfig = true
                fetchFile = "dev.html"
           elseif(path =="/info.xml") then
                fetchFile = "info.xml"
-          end
-          if(path =="/monitorjson.htm") then
+          elseif(path=="/" or string.find(path,"?")~=nil) then
+               writeConfig = true
+          else--if(path =="/monitorjson.htm") then
                getTemp()
-               buf = strOnline
-          else
-               print("Send HTML File:"..fetchFile)
-               --print(node.heap())
-               if (file.open(fetchFile,'r')) then
-                    buf = file.read()
-                    file.close()
-               end
-               
+               fetchFile = "monitor.json"
+               --buf = strOnline
           end
+     	print("Send HTML File:"..fetchFile)
+     	--print(node.heap())
+     	if (file.open(fetchFile,'r')) then
+     	    buf = file.read()
+     	    file.close()
+     	end
+               
+          --end
           --end
           local _GET = {}
           configFile = "config.lua"
@@ -156,7 +160,7 @@ function setupServer()
                cfgContent = cfgContent .. k..' = "'..v ..'"\r\n'
                _G[k]=v
           end
-          if(cfgContent ~= "") then
+          if(cfgContent ~= "" and writeConfig==true) then
                if(file.open(configFile, "w+")) then
                     --print("writing cfg:"..configFile)
                     file.write(cfgContent)
@@ -210,6 +214,7 @@ function setupServer()
           _G['html_head']=""
           _GET = nil
           --print(node.heap())
+          collectgarbage()
           end)
      end)
      print("Webserver ready: " .. ip)
@@ -228,6 +233,7 @@ function setupMonitor()
           T.BSSID.."\n\treason: "..T.reason)
           _G['status']="wifi error code:"..T.reason
           wifi.sta.disconnect()
+          wifi.sta.connect()
           setupDefaultAp()
           --restart in 5 min later
           tmr.alarm(0,300000,0,function()
@@ -240,10 +246,10 @@ function setupMonitor()
      T.netmask.."\n\tGateway IP: "..T.gateway)
      --_G['html_head']="<meta http-equiv=\"refresh\" content=\"25;url=http://"..T.IP.."\\\">"
      ip = T.IP
-     _G['status']="wifi connected"
+     _G['status']="Connected"
      require("upnp")
      tmr.alarm(0,30000,0,function()
-          print("AP is OFF")
+          print("AP OFF")
           wifi.setmode(wifi.STATION)
           require("run")
      end)
@@ -269,7 +275,7 @@ ssid, password, bssid_set, bssid=wifi.sta.getconfig()
 if(ssid==nil or ssid=="")then
      setupDefaultAp()
 else
-     print("Connectint AP")
+     print("Connecting AP")
      wifi.sta.connect()
      if(wifi.sta.getip()~=nil) then
           setupServer()
