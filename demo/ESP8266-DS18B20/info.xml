@@ -2,14 +2,14 @@
 <URLBase>http://${ip}/</URLBase>
 <device>
 <deviceType>urn:schemas-upnp-org:device:BinaryLight:1</deviceType>
-<friendlyName>DS18B20_${regCodeShort}</friendlyName>
+<friendlyName>TH_${regCodeShort}</friendlyName>
 <presentationURL>/</presentationURL>
 <serialNumber>${chipId}</serialNumber>
-<modelName>Lewei Wifi DS18B20</modelName>
+<modelName>WTH-8266</modelName>
 <modelNumber>1</modelNumber>
-<modelURL>http://www.lewei50.com</modelURL>
-<manufacturer>http://www.lewei50.com</manufacturer>
-<manufacturerURL>http://www.lewei50.com</manufacturerURL>
+<modelURL>https://ht.devicebit.com</modelURL>
+<manufacturer>https://www.devicebit.com</manufacturer>
+<manufacturerURL>https://www.devicebit.com</manufacturerURL>
 <UDN>uuid:c5baf4a1-0c8e-44da-9714-ef345678${chipId}</UDN>
 </device>
 </root>

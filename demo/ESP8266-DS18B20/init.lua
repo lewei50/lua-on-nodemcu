@@ -1,6 +1,7 @@
 ip = "192.168.4.1"
 svr = nil
 chipId = string.format("%x",node.chipid())
+mac = wifi.sta.getmac()
 
 snDisabled = false
 strOnline = ""
@@ -10,10 +11,11 @@ sensorData=""
 gateWay = nil
 userKey = nil
 
+
 function getTemp()
-     pin = 5
-     status, temp, humi, temp_dec, humi_dec = dht.read(pin)
-     if status == dht.OK then
+     local pin = 5
+     local dhtStatus, temp, humi, temp_dec, humi_dec = dht.read(pin)
+     if dhtStatus == dht.OK then
           -- Float firmware using this example
           --print("DHT Temperature:"..temp..";".."Humidity:"..humi)
           sensorState = "succeed"
@@ -50,7 +52,7 @@ function getTemp()
       end)
       ]]--
          --print(node.heap())
-     strOnline = "{\"status\":\""..sensorState.."\",\"data\":["..sensorData.."],\"mac\":\""..string.gsub(wifi.sta.getmac(), ":", "").."\"}"
+     strOnline = "{\"status\":\""..sensorState.."\",\"data\":["..sensorData.."],\"mac\":\""..string.gsub(mac, ":", "").."\"}"
 
      return temp
 end
@@ -75,7 +77,10 @@ end
 
 
 tmr.alarm(0,2000,0,function()
---print(string.split("asdasfd_d23","_"))
+
+if(wifi.sta.getip() ~= nil) then
+     ip = wifi.sta.getip()
+end
 require("config")
 require("devConfig")
 --print(server)
@@ -84,9 +89,9 @@ updateRegCode()
 function setupDefaultAp()
      print("start default ap")
      cfg={}
-     cfg.ssid="DS18B20"
-     if(regCode~=nil) then
-          cfg.ssid="DS18B20-"..regCodeShort
+     cfg.ssid="WTH"
+     if(regCode~=nil and regCode~='') then
+          cfg.ssid="WTH-"..regCodeShort
      end
      cfg.pwd="12345678"
      if(wifi.ap.config(cfg))then
@@ -109,6 +114,18 @@ end
 
 
 
+local function setupSSDP()
+     if(wifi.sta.getip() ~= nil) then
+          require("upnp")
+          if(tmr.state(0)== nil) then
+               tmr.alarm(0,30000,0,function()
+                    print("AP OFF")
+                    wifi.setmode(wifi.STATION)
+                    require("run")
+               end)
+          end
+     end
+end
 
 
 function setupServer()
@@ -220,8 +237,9 @@ function setupServer()
      print("Webserver ready: " .. ip)
      --print(node.heap())
      --end)
-
+     setupSSDP()
 end
+
 
 function setupMonitor()
      wifi.eventmon.register(wifi.eventmon.STA_CONNECTED, function(T)
@@ -248,11 +266,7 @@ function setupMonitor()
      ip = T.IP
      _G['status']="Connected"
      require("upnp")
-     tmr.alarm(0,30000,0,function()
-          print("AP OFF")
-          wifi.setmode(wifi.STATION)
-          require("run")
-     end)
+     setupSSDP()
      setupServer()
      end)
      --[[
