@@ -136,7 +136,7 @@ function setupServer()
      conn:on("receive", function(client,request)
           --local buf = ""
           writeConfig = false
-          fetchFile = "wifi.html"
+          local fetchFile = "wifi.html"
           local _, _, method, path, vars = string.find(request, "([A-Z]+) (.+)?(.+) HTTP");
 
           --if(method == nil)then
@@ -224,10 +224,11 @@ function setupServer()
           client:send("Connection:close\r\n\r\n")
           if(info~="" and info~= nil) then client:send(buf, function(client) client:close() end);
           --print(info)
-          info = ""
-          else client:send(buf, function(client) client:close() end);
-          buf = nil
+               info = nil
+          else
+               client:send(buf, function(client) client:close() end);
           end
+          buf = nil
           _G['html_head']=""
           _GET = nil
           --print(node.heap())
