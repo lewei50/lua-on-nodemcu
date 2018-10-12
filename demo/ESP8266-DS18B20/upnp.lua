@@ -18,7 +18,7 @@ local ssdp_response = "HTTP/1.1 200 OK\r\n"..
 "Location: http://"..wifi.sta.getip().."/info.xml\r\n\r\n"
 
 local function response(connection, payLoad, port, ip)
-    if string.match(payLoad,"M-SEARCH") and string.match(payLoad,"rootdevice") then
+    if string.match(payLoad,"M-SEARCH") and (string.match(payLoad,"rootdevice") or string.match(payLoad,"lewei50.com")) then
         connection:send(port,ip,ssdp_response)
         --print("response")
         --print("send:")
