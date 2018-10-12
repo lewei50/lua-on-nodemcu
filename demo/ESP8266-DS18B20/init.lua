@@ -115,13 +115,14 @@ end
 
 
 local function setupSSDP()
+     --print("setupssdp")
      if(wifi.sta.getip() ~= nil) then
-          require("upnp")
           if(tmr.state(0)== nil) then
                tmr.alarm(0,30000,0,function()
                     print("AP OFF")
                     wifi.setmode(wifi.STATION)
                     require("run")
+                    require('upnp')
                end)
           end
      end
@@ -266,9 +267,8 @@ function setupMonitor()
      --_G['html_head']="<meta http-equiv=\"refresh\" content=\"25;url=http://"..T.IP.."\\\">"
      ip = T.IP
      _G['status']="Connected"
-     require("upnp")
-     setupSSDP()
      setupServer()
+     --setupSSDP()
      end)
      --[[
      wifi.eventmon.register(wifi.eventmon.STA_DHCP_TIMEOUT, function()

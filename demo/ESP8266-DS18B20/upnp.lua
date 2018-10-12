@@ -1,3 +1,4 @@
+print("ssdp")
 net.multicastJoin("","239.255.255.250")
 
 local ssdp_notify = "NOTIFY * HTTP/1.1\r\n"..
