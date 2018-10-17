@@ -186,10 +186,6 @@ function setupServer()
                     file.close()
                     dofile(configFile)
                     updateRegCode()
-                    if(configFile == "devConfig.lua")then
-						          wifi.sta.disconnect()
-						          wifi.sta.connect()
-                    end
                end
           end
 
