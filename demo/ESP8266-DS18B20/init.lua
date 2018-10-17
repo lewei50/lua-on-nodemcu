@@ -89,9 +89,9 @@ updateRegCode()
 function setupDefaultAp()
      print("start default ap")
      cfg={}
-     cfg.ssid="WTH"
+     cfg.ssid="eMonitor"
      if(regCode~=nil and regCode~='') then
-          cfg.ssid="WTH-"..regCodeShort
+          cfg.ssid="eMonitor-"..regCodeShort
      end
      cfg.pwd="12345678"
      if(wifi.ap.config(cfg))then
@@ -186,6 +186,10 @@ function setupServer()
                     file.close()
                     dofile(configFile)
                     updateRegCode()
+                    if(configFile == "devConfig.lua")then
+						          wifi.sta.disconnect()
+						          wifi.sta.connect()
+                    end
                end
           end
 

@@ -2,10 +2,10 @@
 <URLBase>http://${ip}/</URLBase>
 <device>
 <deviceType>urn:schemas-upnp-org:device:BinaryLight:1</deviceType>
-<friendlyName>TH_${regCodeShort}</friendlyName>
+<friendlyName>eMonitor_${regCodeShort}</friendlyName>
 <presentationURL>/</presentationURL>
 <serialNumber>${chipId}</serialNumber>
-<modelName>WTH-8266</modelName>
+<modelName>eMonitor</modelName>
 <modelNumber>1</modelNumber>
 <modelURL>https://ht.devicebit.com</modelURL>
 <manufacturer>https://www.devicebit.com</manufacturer>
