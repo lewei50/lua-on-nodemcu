@@ -43,14 +43,6 @@ function getTemp()
                end
           end,{})
      end
-     --[[
-     tmr.alarm(4,1000,tmr.ALARM_SINGLE,function()
-     if(T1 == nil) then
-     
-          
-       end
-      end)
-      ]]--
          --print(node.heap())
      strOnline = "{\"status\":\""..sensorState.."\",\"data\":["..sensorData.."],\"mac\":\""..string.gsub(mac, ":", "").."\"}"
 
@@ -240,6 +232,7 @@ function setupServer()
      --print(node.heap())
      --end)
      setupSSDP()
+     tmr.unregister(4)
 end
 
 
@@ -300,4 +293,10 @@ end
 end )
 tmr.alarm(1, 3000, 1, function()
     getTemp()
+end)
+
+
+
+tmr.alarm(4,600000,tmr.ALARM_SINGLE,function()
+	node.restart()
 end)
