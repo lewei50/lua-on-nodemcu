@@ -242,12 +242,12 @@ function setupMonitor()
      T.BSSID.."\n\tChannel: "..T.channel)
      end)
      wifi.eventmon.register(wifi.eventmon.STA_DISCONNECTED, function(T)
-          if(tmr.state(0)== nil) then
                print("\n\tSTA - DISCONNECTED".."\n\tSSID: "..T.SSID.."\n\tBSSID: "..
                T.BSSID.."\n\treason: "..T.reason)
                _G['status']="wifi error code:"..T.reason
                wifi.sta.disconnect()
                wifi.sta.connect()
+          if(tmr.state(0)== nil) then
                setupDefaultAp()
                --restart in 5 min later
                tmr.alarm(0,300000,0,function()
