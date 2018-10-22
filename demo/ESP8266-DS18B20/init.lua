@@ -58,6 +58,9 @@ function updateRegCode()
           if(result[1]~=nil and result[2]~=nil) then
                userKey = result[1]
                gateWay = result[2]
+               if(LeweiHttpClient ~= nil) then
+                    LeweiHttpClient.init(gateWay,userKey)
+               end
           else
                sn = regCode
           end             
