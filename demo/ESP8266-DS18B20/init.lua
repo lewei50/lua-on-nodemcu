@@ -2,6 +2,7 @@ ip = "192.168.4.1"
 svr = nil
 chipId = string.format("%x",node.chipid())
 mac = wifi.sta.getmac()
+mac = string.gsub(mac, ":", "")
 
 snDisabled = false
 strOnline = ""
@@ -10,15 +11,18 @@ sensorData=""
 
 gateWay = nil
 userKey = nil
+regCode = ""
 
 
 function getTemp()
+     sensorState = "succeed"
      local pin = 5
      local dhtStatus, temp, humi, temp_dec, humi_dec = dht.read(pin)
      if dhtStatus == dht.OK then
           -- Float firmware using this example
           --print("DHT Temperature:"..temp..";".."Humidity:"..humi)
-          sensorState = "succeed"
+          temp = string.format("%0.1f",temp)
+          humi = string.format("%0.1f",humi)
           sensorData = temp..","..humi
           T1 = temp
           H1 = humi
@@ -32,8 +36,7 @@ function getTemp()
           ds18b20.read(
           function(ind,rom,res,temp,tdec,par)
                if(temp ~= nil) then
-                    sensorState = "succeed"
-                    sensorData = temp
+                    sensorData = string.format("%0.1f",temp)
                     T1 = temp
                     H1 = nil
                else
@@ -43,14 +46,23 @@ function getTemp()
                end
           end,{})
      end
-         --print(node.heap())
-     strOnline = "{\"status\":\""..sensorState.."\",\"data\":["..sensorData.."],\"mac\":\""..string.gsub(mac, ":", "").."\"}"
-
+     
+     strOnline = '{"status":"${sensorState}","data":[${sensorData}],"sn":"${regCode}","mac":"${mac}"}'
+     strOnline = strOnline:gsub('($%b{})', function(w)
+          return _G[w:sub(3, -2)] or ""
+     end)
+     --[[
+     strOnline = "{\"status\":\""..sensorState.."\","
+     strOnline = strOnline .."\"data\":["..sensorData.."],"
+     strOnline = strOnline .."\"sn\":\"".. regCode .."\","
+     strOnline = strOnline .."\"mac\":\""..string.gsub(mac, ":", "")
+     strOnline = strOnline .."\"}"
+     ]]--
      return temp
 end
 
 function updateRegCode()
-     if(regCode~=nil) then
+     if(regCode~="") then
           local result = {}
           for match in (regCode.."_"):gmatch("(.-)".."_") do
              table.insert(result, match)
@@ -78,11 +90,10 @@ if(wifi.sta.getip() ~= nil) then
 end
 require("config")
 require("devConfig")
---print(server)
 updateRegCode()
 
 function setupDefaultAp()
-     print("start default ap")
+     --print("start ap")
      cfg={}
      cfg.ssid="eMonitor"
      if(regCode~=nil and regCode~='') then
@@ -90,7 +101,7 @@ function setupDefaultAp()
      end
      cfg.pwd="12345678"
      if(wifi.ap.config(cfg))then
-          print("AP is ON")
+          print("AP ON")
           setupServer()
      end
 end
@@ -126,7 +137,7 @@ end
 
 function setupServer()
      if srv ~= nil then srv:close() end
-     print("Setting up webserver")
+     --print("webserver on")
      srv=net.createServer(net.TCP)
      srv:listen(80,function(conn)
      conn:on("receive", function(client,request)
@@ -231,11 +242,8 @@ function setupServer()
           collectgarbage()
           end)
      end)
-     print("Webserver ready: " .. ip)
-     --print(node.heap())
-     --end)
+     --print("Webserver ready: " .. ip)
      setupSSDP()
-     --tmr.unregister(4)
 end
 
 
@@ -268,17 +276,6 @@ function setupMonitor()
      setupServer()
      --setupSSDP()
      end)
-     --[[
-     wifi.eventmon.register(wifi.eventmon.STA_DHCP_TIMEOUT, function()
-     print("\n\tSTA - DHCP TIMEOUT")
-     end)
-     wifi.eventmon.register(wifi.eventmon.AP_STACONNECTED, function(T)
-     print("\n\tAP - STATION CONNECTED".."\n\tMAC: "..T.MAC.."\n\tAID: "..T.AID)
-     end)
-     wifi.eventmon.register(wifi.eventmon.AP_STADISCONNECTED, function(T)
-     print("\n\tAP - STATION DISCONNECTED".."\n\tMAC: "..T.MAC.."\n\tAID: "..T.AID)
-     end)
-     ]]--
 end
 
 wifi.setmode(wifi.STATIONAP)
@@ -288,7 +285,7 @@ ssid, password, bssid_set, bssid=wifi.sta.getconfig()
 if(ssid==nil or ssid=="")then
      setupDefaultAp()
 else
-     print("Connecting AP")
+     print("Connecting")
      wifi.sta.connect()
      if(wifi.sta.getip()~=nil) then
           setupServer()
@@ -299,10 +296,3 @@ end )
 tmr.alarm(1, 3000, 1, function()
     getTemp()
 end)
-
-
---[[
-tmr.alarm(4,600000,tmr.ALARM_SINGLE,function()
-	node.restart()
-end)
-]]--
